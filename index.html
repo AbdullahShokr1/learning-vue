@@ -1,11 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <script src="assets/js/vue3.js"></script>
     <title>Project Vue 3</title>
-</head>
-<body>
+  </head>
+  <body>
+    <div id="mainapp" class="container">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary m-3">
+            <div class="container-fluid justify-content-between d-flex">
+                <a class="navbar-brand" href="#" @click.prevent="iscartvisiable=false">Navbar</a>
+                <a class="text-center text-decoration-none" href="#">[{{cart.items.length}}] <span v-if="cart.items.length <= 1 ">item</span><span v-else>items</span>  with total [${{gettotalprice()}}] <span class="btn btn-primary" @click.prevent="iscartvisiable=true">Show Cart</span></a>
+            </div>
+        </nav>
+        <div class="row container justify-content-center algin-item-center" v-if="iscartvisiable===false">
+            <div v-for="product in products" class="card" style="width: 18rem;">
+                <img :src="product.thumbnail" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{product.title}}</h5>
+                    <p class="card-text">{{product.description}}</p>
+                    <p class="card-text">stock : {{product.stock}}</p>
+                    <a href="#" class="btn btn-primary" :disable="product.stock==0" @click.prevent="addCart(product)">add to cart</a>
+                </div>
+            </div>
+        </div>
+        <!--End the product-->
+
+        <!--Start the Cart-->
+        <div class="row container justify-content-center algin-item-center" v-if="iscartvisiable===true">
+            <h2 v-if="cart.items.length < 1">Cart is empty Now!!</h2>
+            <table class="table" v-if="cart.items.length >= 1">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">product</th>
+                        <th scope="col">price</th>
+                        <th scope="col">quantity</th>
+                        <th scope="col">action</th>
+                        <th scope="col">totla price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in cart.items" :key="item.product.id">
+                        <th scope="row">{{item.product.id}}</th>
+                        <td>{{item.product.title}}</td>
+                        <td>{{item.product.price}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.quantity}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--Start the Cart-->
     
-</body>
+    </div>
+    <script src="assets/js/products.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data:()=>({
+                products:products,
+                iscartvisiable:false,
+                cart:{
+                    items:[],
+                },
+                CartCount:0,
+                totalPrice:0,
+            }),
+            methods:{
+                addCart(product){
+                    this.cart.items.push({
+                        product:product,
+                        quantity:1
+                    });
+                    product.stock--;
+
+                },
+                gettotalprice(){
+                    let totalprice = 0;
+                    for(let i =0; i < this.cart.items.length;i++){
+                        totalprice += this.cart.items[i].product.price*this.cart.items[i].quantity;
+
+                    }
+                    return totalprice;
+                }
+            }
+
+        });
+        app.mount("#mainapp");
+    </script>
+  </body>
 </html>

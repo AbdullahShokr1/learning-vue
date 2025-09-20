@@ -1,4 +1,4 @@
-products: [
+const products = [
   {
    id: 1,
    title: "Essence Mascara Lash Princess",
